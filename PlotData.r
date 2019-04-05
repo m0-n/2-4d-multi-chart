@@ -2,45 +2,45 @@ library(ggplot2)
 library(scales)
 
 # function creates labels with total number of queries
-create_feature_labels_list <- function() {
-  features <- unique(prep_data$feature)
-  feature_lables <- c()
-  for (feature in features) {
-    feature_queries_binaryFeature0 <- sum(prep_data[(prep_data$feature == feature & prep_data$binaryFeature == "0"), "count"])
-    feature_queries_binaryFeature1 <- sum(prep_data[(prep_data$feature == feature & prep_data$binaryFeature == "1"), "count"])
-    feature_queries_binaryFeature0 <- paste0("binaryFeature = 0 (", feature_queries_binaryFeature0, ")")
-    feature_queries_binaryFeature1 <- paste0("binaryFeature = 1 (", feature_queries_binaryFeature1, ")")
-    feature_queries_total <- paste0("(", sum(prep_data[prep_data$feature == feature, "count"]), ")")
-    feature_queries_total <- paste(feature, feature_queries_total, sep = " ")
-    feature_lables[feature] <- paste(feature_queries_total, feature_queries_binaryFeature0, feature_queries_binaryFeature1, sep = "\n")
+create_keyword_labels_list <- function() {
+  keywords <- unique(gso_data$keyword)
+  keyword_lables <- c()
+  for (keyword in keywords) {
+    keyword_queries_urlCall0 <- sum(gso_data[(gso_data$keyword == keyword & gso_data$urlCall == "0"), "count"])
+    keyword_queries_urlCall1 <- sum(gso_data[(gso_data$keyword == keyword & gso_data$urlCall == "1"), "count"])
+    keyword_queries_urlCall0 <- paste0("flag = 0 (", keyword_queries_urlCall0, ")")
+    keyword_queries_urlCall1 <- paste0("flag = 1 (", keyword_queries_urlCall1, ")")
+    keyword_queries_total <- paste0("(", sum(gso_data[gso_data$keyword == keyword, "count"]), ")")
+    keyword_queries_total <- paste(keyword, keyword_queries_total, sep = " ")
+    keyword_lables[keyword] <- paste(keyword_queries_total, keyword_queries_urlCall0, keyword_queries_urlCall1, sep = "\n")
   }
   
-  feature_lables["_Outcome"] <- "OUTCOME"
-  return(feature_lables)
+  keyword_lables["ARANKING"] <- "Target Variable"
+  return(keyword_lables)
 }
 
 # load and prepare dataset
-dataset <- read.csv("dataset.csv", sep=";", header = FALSE)
-column_names <- c('feature', 'dummy', 'binaryFeature', 'timestamp', 'count')
-names(dataset) <- column_names
-dataset$timestamp <- as.Date(dataset$timestamp, "%Y/%m/%d")
+gso_newplacement <- read.csv("C:\\d_newplacement.csv", sep=";", header = TRUE)
+column_names <- c('keyword', 'queryType', 'urlCall', 'timestamp', 'count')
+names(gso_newplacement) <- column_names
+gso_newplacement$timestamp <- as.Date(gso_newplacement$timestamp, "%Y/%m/%d")
 
 # create dataset for the chart
 dates_sequence <- seq(as.Date("2018/10/1"), as.Date("2019/01/31"), by= "day")
-features <- unique(dataset$feature)
-dummys = unique(dataset$dummy)
-dummys <- dummys[dummys != "Outcome"]
-binaryFeatures <- c("0","1")
-prep_data <- expand.grid(date = dates_sequence, feature = features, binaryFeature = binaryFeatures)
-prep_data <- merge(prep_data, dataset, by.x = c("date","feature","binaryFeature"), by.y = c("timestamp","feature", "binaryFeature"), all.x = TRUE)
-prep_data[is.na(prep_data$count) == TRUE, "count"] <- 0
-prep_data$feature <- as.character(prep_data$feature)
-prep_data<-prep_data[!(prep_data$feature == "Outcome" & prep_data$binaryFeature == "0"), ]
-prep_data[prep_data$feature == "Outcome", "feature"] <- "_Outcome"
+keywords <- unique(gso_newplacement$keyword)
+queryTypes = unique(gso_newplacement$queryType)
+queryTypes <- queryTypes[queryTypes != "RANKING"]
+urlCalls <- c("0","1")
+gso_data <- expand.grid(date = dates_sequence, keyword = keywords, urlCall = urlCalls)
+gso_data <- merge(gso_data, gso_newplacement, by.x = c("date","keyword","urlCall"), by.y = c("timestamp","keyword", "urlCall"), all.x = TRUE)
+gso_data[is.na(gso_data$count) == TRUE, "count"] <- 0
+gso_data$keyword <- as.character(gso_data$keyword)
+gso_data<-gso_data[!(gso_data$keyword == "RANKING" & gso_data$urlCall == "0"), ]
+gso_data[gso_data$keyword == "RANKING", "keyword"] <- "ARANKING"
 
 # create and show time series plot
-ggplot(prep_data, aes(x = date, y = count, colour = binaryFeature)) + 
+ggplot(gso_data, aes(x = date, y = count, colour = urlCall)) + 
   geom_line() + 
-  facet_grid(feature ~., labeller =  labeller(feature = create_feature_labels_list())) +
+  facet_grid(keyword ~., labeller =  labeller(keyword = create_keyword_labels_list())) +
   scale_x_date(labels = date_format("%d-%m-%y")) +
   theme(strip.text.y = element_text(angle=0, hjust = 0))
