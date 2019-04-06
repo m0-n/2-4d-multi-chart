@@ -1,5 +1,5 @@
 # R multi-2d-plot with colors from 3rd variable
-> Small script to display series of features in a single plot. This can be an "ok" approach for finding causal relationships between features and a target variable, when the dataset is to small to use machine learning, but too complex to see the pattern with the naked eye.
+> Small script to display series of features in a single plot. This can be an "ok" approach for finding causal relationships between features and a target variable, when the dataset is too small to use machine learning, but too complex to see the pattern with the naked eye.
 
 ![rstudio 2d multi chart with 3rd variable as color](http://logos-gmbh.com/tools/3d-plot-examplechart.png)
 
