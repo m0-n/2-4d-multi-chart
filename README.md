@@ -1,7 +1,7 @@
 # R multiple 2d plots with colors from 3rd variable
 >Generates a series of 2d plots with colors from 3rd variable. Can be used to visualize 2 - 4 dimensional data.
 
-RStudio script to display series of feature-chart in a single plot. This can be an "ok" approach for finding causal relationships between features and a target variable, when the dataset is too small to use machine learning, but too complex to see the pattern with the naked eye.
+RStudio script to display a series of feature-charts in a single plot. This can be an "ok" approach for finding causal relationships between features and a target variable, when the dataset is too small to use machine learning, but too complex to see the pattern with the naked eye.
 
 ![rstudio 2d multi chart with 3rd variable as color](http://logos-gmbh.com/tools/3d-plot-examplechart.png)
 
