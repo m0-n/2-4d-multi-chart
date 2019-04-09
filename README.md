@@ -8,7 +8,8 @@ RStudio script to display a series of feature-charts in a single plot. This can 
 ## Usage instructions
 1. In line 23, change the path to your input text file and specifiy whether its first line is the header (default: true)
 2. In line 24, change the column names to fit your data
-3. Run the script
+3. In line 29, set the timeframe you want to analyze (the script assumes that time is one of your dimensions)
+4. Run the script
 
 ## Dataset example line
 {"feature 1";"0";"2019/01/01";"99"}
